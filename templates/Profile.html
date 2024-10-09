@@ -1,0 +1,291 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block css %}
+    <style>
+        .imgCs {
+            transition: all 0.5s
+        }
+        
+        .imgCs:hover {
+            transform: scale(1.5)
+        }
+        
+        .coverImg {
+            height: 140px;
+            width: 140px;
+            border-radius: 50%
+        }
+        
+        .name {
+            font-size: 22px;
+            font-weight: bold
+        }
+        
+        .idd {
+            font-size: 14px;
+            font-weight: 600
+        }
+        
+        .idd1 {
+            font-size: 12px
+        }
+        
+        .number {
+            font-size: 22px;
+            font-weight: bold
+        }
+        
+        .follow {
+            font-size: 12px;
+            font-weight: 500;
+            color: #444444
+        }
+        
+        .text span {
+            font-size: 13px;
+            color: #545454;
+            font-weight: 500
+        }
+        
+        .icons i {
+            font-size: 19px
+        }
+        
+        hr .new1 {
+            border: 1px solid
+        }
+        
+        .join {
+            font-size: 14px;
+            color: #a0a0a0;
+            font-weight: bold
+        }
+        .telepon {
+            font-size: 18px;
+            color: #a0a0a;
+            font-weight: bold
+        }
+        
+        .date {
+            background-color: #ccc
+        }
+        .image-preview {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>    
+{% endblock css %}
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Profile {{ user.username }}</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'Dashboard' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Profile </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+                    <div class="card p-4 col-12 col-md-6">
+                        <div class="image d-flex flex-column justify-content-center align-items-center">
+                            <div class="mb-5 d-flex flex-column justify-content-center align-items-center">
+                                <button class="btn btn-secondary coverImg">
+                                    {% if user.image %}
+                                        <img  class="imgCs rounded-circle" src="{{ user.image.url }}" height="100" width="100" alt="{{ user.username }}">
+                                    {% else %}
+                                        <img class="imgCs rounded-circle" src="{% static 'images/users/avatar-2.jpg' %}" height="100" width="100" alt="{{ user.username }}">
+                                    {% endif %}
+                                </button>
+                                <div class="d-flex flex-row justify-content-center align-items-center gap-2 mt-3">
+                                    <span id="usernameToCopy" class="idd">{{ user.username }}</span>
+                                    <span><i id="copyIcon" class="fa fa-copy" style="cursor: pointer;" aria-hidden="true"></i></span>
+                                </div>
+                                <span class="name mt-3">{{user.nama}}</span>
+                                <span class="idd">{{ user.gender }}</span>
+                                <span class="idd">{{ user.email }}</span>
+                                <div class="px-2 rounded mt-3 date">
+                                    <span id="textTel" class="telepon">{{ user.telepon }}</span>
+                                    <span><i id="copyTel" class="fa fa-copy" style="cursor: pointer;" aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="row">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <button data-bs-toggle="modal" data-bs-target="#editProfil" type="button" class="btn btn-primary"><i class="fa fa-pencil-square-o mr-2" aria-hidden="true"></i> Edit Profile</button>
+                                        <button data-bs-toggle="modal" data-bs-target="#editPassword" type="button" class="btn btn-secondary"><i class="mdi mdi-form-textbox-password mr-2" aria-hidden="true"></i> Ubah Password</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center">
+                                <span><i class="fa fa-twitter"></i></span>
+                                <span><i class="fa fa-facebook-f"></i></span>
+                                <span><i class="fa fa-instagram"></i></span>
+                                <span><i class="fa fa-linkedin"></i></span>
+                            </div>
+                            <div class="px-2 rounded mt-4 date">
+                                <span class="join">Joined {{user.date_joined|date:"M, Y"}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="editProfil" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="{% url "UpdateProfile" %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-center">
+                    <div class="image-preview" id="imagePreview">
+                        {% if user.image %}
+                            <img  id="imagePreviewImg" src="{{ user.image.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            <img  id="imagePreviewImg" src="{% static 'images/users/avatar-2.jpg' %}" alt="{{ user.username }}">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group pilih-gambar mb-2 d-flex justify-content-center">
+                    <div class=" col-6">
+                        <input type="file" name="image" id="imageInput" accept="image/*" class="form-control ">
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" class="form-control" name="username" value="{{ user.username }}" id="username" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="nama">Nama</label>
+                    <input type="text" class="form-control" name="nama" value="{{ user.nama }}" id="nama" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="gender">Gender</label>
+                    <select class="form-select" name="gender" id="gender" aria-label="Default select example" required>
+                        <option disabled>Pilih gender</option>
+                        <option {% if user.gender == "Laki-Laki" %}selected{% endif %} value="Laki-Laki">Laki-Laki</option>
+                        <option {% if user.gender == "Perepmuan" %}selected{% endif %} value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="telepon">Telepon</label>
+                    <input type="text" class="form-control" name="telepon" value="{{ user.telepon }}" id="telepon" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="text" class="form-control" name="email" value="{{ user.email }}" id="email" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="editPassword" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="{% url "UpdatePassword" %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label class="form-label" for="password_lama">Password Sebelumnya</label>
+                    <input type="password" class="form-control" name="password_lama" id="password_lama" minlength="8" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" minlength="8" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="ulangi_password">Ulangi Password</label>
+                    <input type="password" class="form-control" name="ulangi_password" id="ulangi_password" minlength="8" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyIcon = document.getElementById('copyIcon');
+            const textToCopy = document.getElementById('usernameToCopy');
+            function copyTextToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    console.log('Text successfully copied to clipboard');
+                }).catch(function(err) {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+            copyIcon.addEventListener('click', function() {
+                const text = textToCopy.textContent || textToCopy.innerText;
+                copyTextToClipboard(text);
+                alert('Username copied to clipboard!');
+            });
+
+            const copyTel = document.getElementById('copyTel');
+            const textTel = document.getElementById('textTel');
+
+            function copyTextToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    console.log('Text successfully copied to clipboard');
+                }).catch(function(err) {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+            copyTel.addEventListener('click', function() {
+                const text = textTel.textContent || textTel.innerText;
+                copyTextToClipboard(text);
+                alert('Phone number copied to clipboard!');
+            });
+        });
+    </script>
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function(event) {
+            const imagePreview = document.getElementById('imagePreviewImg');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            }
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+{% endblock js %}

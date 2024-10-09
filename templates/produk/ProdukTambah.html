@@ -1,0 +1,77 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Tambah Produk</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'Dashboard' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'ProdukIndex' %}">Produk</a></li>
+                            <li class="breadcrumb-item active">Tambah</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <!-- Category Field -->
+                            <div class="d-flex justify-content-end">
+                                <div class="form-group mb-3 col-sm-3 text-end">
+                                    <label class="form-label" for="tipe">Tipe</label>
+                                    <select class="form-select" name="tipe" id="id_tipe" aria-label="Default select example" required>
+                                        <option selected disabled>Pilih Tipe</option>
+                                        <option value="Membership" {% if form.tipe.value == "Membership" %}selected{% endif %}>Membership</option>
+                                        <option value="Trainer" {% if form.tipe.value == "Trainer" %}selected{% endif %}>Trainer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Title Field -->
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="nama">Nama Produk</label>
+                                <input type="text" class="form-control" name="nama" value="{{ form.nama.value }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="durasi">Durasi Waktu</label>
+                                <input type="number" min="1" class="form-control" name="durasi_hari" value="{{ form.durasi_hari.value }}" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="harga">Harga Produk</label>
+                                <input type="number" class="form-control" name="harga" value="{{ form.harga.value }}" required>
+                            </div>
+                            <!-- Content Field -->
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="deskripsi">Isi Deskripsi</label>
+                                <textarea class="form-control" id="elm1" name="deskripsi" required>{{ form.deskripsi.value }}</textarea>
+                            </div>
+                            
+                            <!-- Submit and Back Buttons -->
+                            <div class="mb-0">
+                                <button type="submit" class="col-12 btn btn-primary waves-effect waves-light me-1">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Page-content -->
+{% endblock content %}
+
+{% block js %}
+    <script src="{% static 'libs/tinymce/tinymce.min.js' %}"></script>
+    <script src="{% static 'js/pages/form-editor.init.js' %}"></script>
+{% endblock js %}

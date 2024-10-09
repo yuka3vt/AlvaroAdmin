@@ -1,0 +1,155 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-select-bs4/css//select.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />     
+{% endblock css %}
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Daftar Kategori Blog</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'Dashboard' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Kategori Blog</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0"></h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#tambahModal"><i class="fa fa-plus" aria-hidden="true"></i> Tambah</button>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Kategori</th>
+                                    <th>Jumlah Yang Dibuat</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for k in kategoris %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ k.nama }}</td>
+                                        <td>
+                                            {% if k.jumlah_blog %}
+                                                {{ k.jumlah_blog_user }} dari total {{ k.jumlah_blog }} blog
+                                            {% else %}
+                                                Tidak ada blog dibuat
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button data-bs-toggle="modal" data-bs-target="#editModal-{{ k.id }}" type="button" class="btn btn-primary waves-effect waves-light"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                            <a href="#" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ k.id }}">
+                                                <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <div class="modal fade" id="confirmDeleteModal-{{ k.id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel-{{ k.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteLabel-{{ k.id }}">Konfirmasi Hapus</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda yakin ingin menghapus kategori {{ k.nama }}?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{% url 'HapusKategori' k.id %}" class="btn btn-danger">Hapus</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tambahModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="{% url 'TambahKategori' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Tambah Kategori Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label class="form-label" for="nama">Nama Kategori</label>
+                    <input type="text" class="form-control" name="nama" id="nama" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% for k in kategoris %}
+<div id="editModal-{{ k.id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="{% url 'EditKategori' k.id %}">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Edit Kategori</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label class="form-label" for="nama">Nama Kategori</label>
+                    <input type="text" class="form-control" name="nama" value="{{ k.nama }}" id="nama" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary waves-effect waves-light">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
+<!-- End Page-content -->
+{% endblock content %}
+{% block js %}
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+{% endblock js %}

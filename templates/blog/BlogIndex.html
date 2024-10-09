@@ -1,0 +1,131 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-select-bs4/css//select.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />     
+{% endblock css %}
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Daftar Blog</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'Dashboard' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Blog</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0"></h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <a href="{% url "TambahBlog" %}" class="btn btn-primary waves-effect waves-light"><i class="fa fa-plus" aria-hidden="true"></i> Tambah</a>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>Title</th>
+                                    <th>Kategori</th>
+                                    <th>Deskripsi</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for blog in blogs %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>
+                                            {% if blog.image %}
+                                                <img class="avatar-md" src="{{ blog.image.url }}" alt="{{ blog.title }}" style="width: 50px; height: 50px;">
+                                            {% else %}
+                                                <span>No Image</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% with blog.title|slice:":25" as short_title %}
+                                                {% if blog.title|length > 25 %}
+                                                    {{ short_title }}<span class="stext-110-b text-abu">....</span>
+                                                {% else %}
+                                                    {{ blog.title }}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td>{{ blog.category.nama }}</td>
+                                        <td>
+                                            {% with blog.description|slice:":25" as short_description %}
+                                                {% if blog.description|length > 25 %}
+                                                    {{ short_description|safe }}<span class="stext-110-b text-abu">....</span>
+                                                {% else %}
+                                                    {{ blog.description|safe }}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'BlogEdit' blog.id %}" class="btn btn-primary waves-effect waves-light"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                                            <a href="#" class="btn btn-danger waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-{{ blog.id }}">
+                                                <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <div class="modal fade" id="confirmDeleteModal-{{ blog.id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel-{{ blog.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteLabel-{{ blog.id }}">Konfirmasi Hapus</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Apakah Anda yakin ingin menghapus blog ini?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                                    <a href="{% url 'HapusBlog' blog.id %}" class="btn btn-danger">Hapus</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Page-content -->
+{% endblock content %}
+{% block js %}
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+{% endblock js %}

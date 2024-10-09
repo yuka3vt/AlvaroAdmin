@@ -1,0 +1,121 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block css %}
+    <!-- DataTables -->
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-select-bs4/css//select.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />     
+{% endblock css %}
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                    <h4 class="mb-sm-0">Riwayat Trainer</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="{% url 'Dashboard' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Riwayat Trainer</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap"
+                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Client</th>
+                                    <th>Contact</th>
+                                    <th>Paket Trainer</th>
+                                    <th>Jumlah Sesi</th>
+                                    <th>Rencana Mulai</th>
+                                    <th>Rencana Selesai</th>
+                                    <th>Status</th>
+                                    {% if user.role == "Coach" %}
+                                        <th>Action</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% load tz %}
+                                {% for trainer in trainerList %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ trainer.user.username }}</td>
+                                    <td>{{ trainer.user.telepon }}</td>
+                                    <td>{{ trainer.produk.nama }}</td>
+                                    <td>{{ trainer.jumlah_sesi }} sesi</td>
+                                    <td>
+                                        {% if trainer.schedules.exists %}
+                                            {% with first_schedule=trainer.schedules.first %}
+                                                {{ first_schedule.mulai|date:"l" }}, 
+                                                {{ first_schedule.mulai|date:"d F Y" }}
+                                            {% endwith %}
+                                        {% else %}
+                                            Jadwal tidak tersedia
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if trainer.schedules.exists %}
+                                            {% with last_schedule=trainer.schedules.last %}
+                                                {{ last_schedule.mulai|date:"l" }}, 
+                                                {{ last_schedule.mulai|date:"d F Y" }}
+                                            {% endwith %}
+                                        {% else %}
+                                            Jadwal tidak tersedia
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ trainer.status }}
+                                    </td>
+                                    {% if user.role == "Coach" %}
+                                        <td>
+                                            <a href="{% url 'DetailTrainer' trainer.id %}" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-eye-check"></i></a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                                {% empty %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Page-content -->
+{% endblock content %}
+{% block js %}
+   
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Buttons examples -->
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+{% endblock js %}

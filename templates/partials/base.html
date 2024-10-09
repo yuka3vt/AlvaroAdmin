@@ -1,0 +1,78 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Alvaro Gym" name="description" />
+    <meta content="Yuka Wardana" name="author" />
+    <link rel="shortcut icon" href="{% static 'images/favicon.jpg' %}">
+    <link rel="stylesheet" href="{% static 'libs/morris.js/morris.css' %}">
+    <link href="{% static 'css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .vertical-menu .metismenu .active a {
+            color: #fff !important;
+        }
+        .vertical-menu .metismenu .active a i {
+            color: #fff !important;
+        }
+        .mynotif{
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+    <div id="layout-wrapper">
+        {% include 'partials/header.html' %}
+        {% include 'partials/sidebar.html' %}
+        <div class="main-content">
+            {% block content %}
+            {% endblock %}
+            {% include 'partials/footer.html' %}
+            
+        </div>
+    </div>
+    <script>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "success" %}
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ message }}',
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                {% elif message.tags == "error" %}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: '{{ message }}',
+                        timer: 5000,
+                        showConfirmButton: false
+                    });
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+
+</html>

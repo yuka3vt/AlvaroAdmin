@@ -1,0 +1,84 @@
+{% load static %}
+<!-- ========== Left Sidebar Start ========== -->
+
+<div class="vertical-menu">
+    <div data-simplebar class="h-100">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title">DASHBOARD</li>
+                <li class="{% if title == 'Dashboard' %}active{% endif %}">
+                    <a href="{% url 'Dashboard' %}" >
+                        <i class="mdi mdi-home-circle"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-title">ALVARO GYM</li>
+                {% if user.role != "Coach" %}
+                    <li class="{% if title == 'Anggota Membership' %}active{% endif %}">
+                        <a href="{% url 'MemberDetails' %}" >
+                            <i class="mdi mdi-card-account-details-star" aria-hidden="true"></i>
+                            <span>Anggota Member</span>
+                        </a>
+                    </li>
+                {% endif %}
+                    <li class="{% if title == 'Anggota Trainer' %}active{% endif %}">
+                        <a href="{% url 'TrainerIndex' %}" >
+                            <i class="mdi mdi-dumbbell"></i>
+                            <span>Anggota Trainer</span>
+                        </a>
+                    </li>
+                    {% if user.role == "Coach" %}
+                    <li class="{% if title == 'Riwayat Trainer' %}active{% endif %}">
+                        <a href="{% url 'RiwayatTrainer' %}" >
+                            <i class="mdi mdi-history" aria-hidden="true"></i>
+                            <span>Riwayat Trainer</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                {% if user.role == "Admin" %}
+                    <li class="{% if title == 'Karyawan' %}active{% endif %}">
+                        <a href="{% url 'Karyawan' %}" >
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Kasir & Coach</span>
+                        </a>
+                    </li> 
+                    <li class="menu-title">Paket Produk</li>
+                    <li class="{% if title == 'List Produk' %}active{% endif %}">
+                        <a href="{% url "ProdukIndex" %}" >
+                            <i class="mdi mdi-text-box-multiple-outline" aria-hidden="true"></i>
+                            <span>List Paket Produk</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user.role == "Coach" %}
+                    <li class="menu-title">BLOG</li>
+                    <li class="{% if title == 'Blog' %}active{% endif %}">
+                        <a href="{% url 'BlogIndex' %}" >
+                            <i class="mdi mdi-blogger"></i>
+                            <span>Blog</span>
+                        </a>
+                    </li>
+                    <li class="{% if title == 'Kategori' %}active{% endif %}">
+                        <a href="{% url 'KategoriIndex' %}" >
+                            <i class="mdi mdi-buffer"></i>
+                            <span>Kategori</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user.role != "Coach" %}
+                    <li class="menu-title">TRANSAKSI</li>
+                    <li class="{% if title == 'Riwayat Transaksi' %}active{% endif %}">
+                        <a href="{% url 'RiwayatTransaksi' %}" >
+                            <i class="mdi mdi-history" aria-hidden="true"></i>
+                            <span>Riwayat Transaksi</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->
